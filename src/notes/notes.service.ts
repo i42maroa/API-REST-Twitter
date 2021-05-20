@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-
 import {Note} from './interfaces/Note'
 
 @Injectable()
@@ -28,6 +27,8 @@ export class NotesService {
     }
 
     getSingleNote(id:number) : Note {
+        console.log("getSingleNote")
         return this.notes.find(notes => notes.id === id);
+        
     }
 }
