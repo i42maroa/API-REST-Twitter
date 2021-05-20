@@ -1,8 +1,8 @@
-import { Controller, Get, Post,Put, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post,Put, Param, Body, Res, HttpStatus} from '@nestjs/common';
 
 
 import {CreateNoteDto} from './dto/create-note.dto'
-import { Note } from './interfaces/Note';
+import { INote } from './interfaces/note.interface';
 
 import { NotesService} from "./notes.service";
 
@@ -11,26 +11,38 @@ export class NotesController {
     constructor(private noteService: NotesService){}
 
     @Get()
-    getNotes():Note[]{
-        return this.noteService.getNotes();
+    async getNotes(@Res() res){
+        const notes =  await this.noteService.getNotes();
+        return res.status(HttpStatus.OK).json({
+            notes
+        })
     }
 
-    @Get(`/favorites`)
-    getNotesFavorite():Note[]{
-        return this.noteService.getFavorites();
+    @Get('/favorites')
+    async getNotesFavorite(@Res() res){
+        const notes =  await this.noteService.getFavorites();
+        return res.status(HttpStatus.OK).json({
+            notesFavorites: notes
+        })
     }
 
     @Get(':noteId')
-    getSingleNote(@Param('noteId') noteId ): Note {
-        return this.noteService.getSingleNote(noteId);
+    async getSingleNote(@Res() res, @Param('noteId') noteId){
+        const note =  await  this.noteService.getSingleNote(noteId);
+        return res.status(HttpStatus.OK).json({
+            note
+        })
     }
 
     @Post()
-    createNotes(@Body() note: CreateNoteDto): string{
-  
-        return 'create note';
+    async createNotes(@Res() res, @Body() createNoteDto: CreateNoteDto){
+        const note = await this.noteService.newNote(createNoteDto);
+        return res.status(HttpStatus.OK).json({
+            message: 'Note Successfully Created',
+            note
+        });
     }
-
+/*
     @Put(':noteID')
     makeFavorite(@Body() note: CreateNoteDto, @Param('noteID') noteID): string{
         return `update note ${noteID} with content: ${note}`;
@@ -40,5 +52,5 @@ export class NotesController {
     updateNote(@Body() note: CreateNoteDto, @Param('noteID') noteID): string{
         return `update note ${noteID} with content: ${note}`;
     }
-
+*/
 }

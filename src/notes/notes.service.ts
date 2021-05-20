@@ -1,36 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import {Note} from './interfaces/Note'
+import { INote } from './interfaces/note.interface'
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { CreateNoteDto } from './dto/create-note.dto';
+
 
 @Injectable()
-export class NotesService {  
+export class NotesService {   
+    constructor(@InjectModel('Note') private readonly noteModel: Model<INote>) {}
+  
+    async getNotes(): Promise<INote[]>{
+        return await this.noteModel.find();
+    }
+
+    async getFavorites(): Promise<INote[]>{
+        return await this.noteModel.find({favorite:true});
+    }
+
+    async getSingleNote(id:string):Promise<INote> {
+        return await this.noteModel.findById(id);      
+    }
     
-    notes: Note[] = [{
-        id:1,
-        title:"Testing",
-        content:"testing description",
-        favorite:true
-    },{
-        id:2,
-        title:"Testing2",
-        content:"testing descriptions ",
-        favorite:false
-    } ,{
-        id:3,
-        title:"Testing3",
-        content:"testing descriptionss ",
-        favorite:true
-    }    
-    ];
-
-    getNotes(): Note[]{
-        return this.notes;
+    async newNote(createNoteDto: CreateNoteDto): Promise<INote>{
+        const note = new this.noteModel(createNoteDto);
+        return await note.save();
     }
 
-    getFavorites():Note[]{
-        return this.notes.filter(note => note.favorite==true)
+    async deleteNote(id:string) : Promise<INote> {
+        return await this.noteModel.findByIdAndDelete(id);      
     }
 
-    getSingleNote(id:number) : Note {
-        return this.notes.find(note => note.id == id);        
+    async updateNote(id:string, createNoteDto: CreateNoteDto) : Promise<INote> {
+        const noteUpdate =  await this.noteModel.findByIdAndUpdate(id,createNoteDto, {new:true});  
+        return  noteUpdate; 
     }
 }

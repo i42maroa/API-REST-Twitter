@@ -5,10 +5,12 @@ import { NotesController } from './notes/notes.controller';
 import { NotesService } from './notes/notes.service';
 import { NotesModule } from './notes/notes.module';
 
+import { MongooseModule } from '@nestjs/mongoose';
+
 
 @Module({
-  imports: [NotesModule],
-  controllers: [AppController, NotesController],
-  providers: [AppService, NotesService],
+  imports: [NotesModule, MongooseModule.forRoot('mongodb://localhost/twitter')],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
