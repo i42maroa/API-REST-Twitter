@@ -15,20 +15,25 @@ export class NotesController {
         return this.noteService.getNotes();
     }
 
-    @Get(`/favorite`)
-    getNotesFavorite():string{
-        return 'Notas favoritas';
+    @Get(`/favorites`)
+    getNotesFavorite():Note[]{
+        return this.noteService.getFavorites();
     }
 
     @Get(':noteId')
     getSingleNote(@Param('noteId') noteId ): Note {
-        console.log(noteId)
         return this.noteService.getSingleNote(noteId);
     }
 
     @Post()
-    createNotes(): string{
-        return 'return nota';
+    createNotes(@Body() note: CreateNoteDto): string{
+  
+        return 'create note';
+    }
+
+    @Put(':noteID')
+    makeFavorite(@Body() note: CreateNoteDto, @Param('noteID') noteID): string{
+        return `update note ${noteID} with content: ${note}`;
     }
 
     @Put(':noteID')

@@ -26,9 +26,11 @@ export class NotesService {
         return this.notes;
     }
 
+    getFavorites():Note[]{
+        return this.notes.filter(note => note.favorite==true)
+    }
+
     getSingleNote(id:number) : Note {
-        console.log("getSingleNote")
-        return this.notes.find(notes => notes.id === id);
-        
+        return this.notes.find(note => note.id == id);        
     }
 }
