@@ -34,4 +34,20 @@ export class NotesService {
         const noteUpdate =  await this.noteModel.findByIdAndUpdate(id,createNoteDto, {new:true});  
         return  noteUpdate; 
     }
+
+    async favoriteNote(id:string) : Promise<INote> {
+        const note = await this.noteModel.findById(id); 
+
+        if(note){
+            if(!note.favorite){
+                const noteUpdate = await this.noteModel.findByIdAndUpdate(id,{favorite:true}, {new:true}); 
+                return  noteUpdate;
+                
+            }else if(note.favorite){
+                const noteUpdate = await this.noteModel.findByIdAndUpdate(id,{favorite:false}, {new:true});
+                return  noteUpdate;
+            }  
+        }
+        return note;       
+    }
 }

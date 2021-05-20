@@ -3,10 +3,10 @@ import {Schema} from 'mongoose';
 
 export const NoteSchema = new Schema({
   title: {type:String, required:true},
-  content: String,
+  content: {type:String, required:true},
   favorite: {
     type: Boolean,
-    default: true
+    default: false
   },
   createdAt: {
     type: Date,

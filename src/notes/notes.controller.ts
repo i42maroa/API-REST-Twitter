@@ -1,9 +1,7 @@
-import { Controller, Get, Post,Put, Param, Body, Res, HttpStatus} from '@nestjs/common';
+import { Controller, Get, Post,Put, Param, Body, Res, HttpStatus, NotFoundException, Delete, Query} from '@nestjs/common';
 
 
 import {CreateNoteDto} from './dto/create-note.dto'
-import { INote } from './interfaces/note.interface';
-
 import { NotesService} from "./notes.service";
 
 @Controller('notes')
@@ -13,14 +11,16 @@ export class NotesController {
     @Get()
     async getNotes(@Res() res){
         const notes =  await this.noteService.getNotes();
+        if(!notes) throw new NotFoundException('There are issues to show notes');
         return res.status(HttpStatus.OK).json({
             notes
         })
     }
 
-    @Get('/favorites')
+    @Get('/list-favorites')
     async getNotesFavorite(@Res() res){
         const notes =  await this.noteService.getFavorites();
+        if(!notes) throw new NotFoundException('Not exist favorite notes');
         return res.status(HttpStatus.OK).json({
             notesFavorites: notes
         })
@@ -28,10 +28,9 @@ export class NotesController {
 
     @Get(':noteId')
     async getSingleNote(@Res() res, @Param('noteId') noteId){
-        const note =  await  this.noteService.getSingleNote(noteId);
-        return res.status(HttpStatus.OK).json({
-            note
-        })
+        const note =  await this.noteService.getSingleNote(noteId);
+        if(!note) throw new NotFoundException('Note does not exists');
+        return res.status(HttpStatus.OK).json(note);
     }
 
     @Post()
@@ -42,15 +41,24 @@ export class NotesController {
             note
         });
     }
-/*
-    @Put(':noteID')
-    makeFavorite(@Body() note: CreateNoteDto, @Param('noteID') noteID): string{
-        return `update note ${noteID} with content: ${note}`;
+
+    @Delete('/delete')
+    async deleteNote(@Res() res, @Query('noteID') noteID){
+        const noteDel = await this.noteService.deleteNote(noteID);
+        if(!noteDel) throw new NotFoundException('Note does not exists');
+        return res.status(HttpStatus.OK).json({
+            message: "Note Deleted Succesfull",
+            noteDel
+        });
     }
 
-    @Put(':noteID')
-    updateNote(@Body() note: CreateNoteDto, @Param('noteID') noteID): string{
-        return `update note ${noteID} with content: ${note}`;
+    @Put('/favorite')
+    async updateNote(@Res() res,  @Query('id') noteID){
+       const upNote = await this.noteService.favoriteNote(noteID);
+       if(!upNote) throw new NotFoundException('Note does not exists');
+       return res.status(HttpStatus.OK).json({
+        message: "Note Updated Succesfull",
+        upNote
+    });
     }
-*/
 }
