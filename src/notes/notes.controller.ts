@@ -1,5 +1,8 @@
 import { Controller, Get, Post,Put, Param, Body } from '@nestjs/common';
 
+
+import {CreateNoteDto} from './dto/create-note.dto'
+
 @Controller('notes')
 export class NotesController {
 
@@ -24,7 +27,7 @@ export class NotesController {
     }
 
     @Put(':noteID')
-    updateNote(@Body() note: {"title":string;"content":string}, @Param('noteID') noteID): string{
+    updateNote(@Body() note: CreateNoteDto, @Param('noteID') noteID): string{
         return `update note ${noteID} with content: ${note}`;
     }
 
