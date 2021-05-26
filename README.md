@@ -23,3 +23,13 @@ La finalidad de esta API ha sido solucionar la prueba de acceso a una empresa
 https://documenter.getpostman.com/view/15885164/TzRa84nk
 
 
+## TECNOLOGÍAS USADAS
+
+ - Framework NESTJS
+ - NodeJS
+ - MongoDB
+ - PostMan
+ 
+
+
+ 
